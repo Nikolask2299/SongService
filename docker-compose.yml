@@ -1,0 +1,52 @@
+networks:
+  interal:
+    driver: bridge
+
+services:
+  go-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    container_name: go-server
+
+    volumes:
+      - ./:/var/www/go
+
+    ports:
+      - 8080:8080
+
+    networks:
+      - interal
+
+  postgres-db:
+    image: postgres:16.4
+    restart: unless-stopped
+
+    environment:
+      - POSTGRES_USER=postgres_admin
+      - POSTGRES_PASSWORD=q1w2e3r4t5y6u7i8o9p0
+      - POSTGRES_DB=postgres
+
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+    networks:
+      - interal
+
+
+  pg-admin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: q1w2e3r4t5y6u7i8o9p0
+      PGADMIN_LISTEN_PORT: 88
+    
+    ports:
+      - 8800:88
+    
+    depends_on:
+      - postgres-db
+
+    networks:
+      - interal

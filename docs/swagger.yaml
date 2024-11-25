@@ -1,0 +1,186 @@
+basePath: /
+definitions:
+  models.FilterSong:
+    description: Filter song model info
+    properties:
+      group:
+        type: string
+      link:
+        type: string
+      releaseDate:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+  models.NewSong:
+    description: Song information about user
+    properties:
+      group:
+        type: string
+      song:
+        type: string
+    type: object
+  models.Song:
+    description: Song information about the account
+    properties:
+      group:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      releaseDate:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+  server.NewID:
+    description: ID song
+    properties:
+      id:
+        type: integer
+    type: object
+  server.TextSong:
+    description: Text song
+    properties:
+      text:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server celler server.
+  title: Swagger Example API
+  version: "2.0"
+paths:
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: create song from database
+      parameters:
+      - description: song struct
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.NewSong'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/server.NewID'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create song
+      tags:
+      - create
+  /data:
+    post:
+      consumes:
+      - application/json
+      description: get songs from database
+      parameters:
+      - description: filter information
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.FilterSong'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Song'
+            type: array
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get Data
+      tags:
+      - data
+  /delete:
+    delete:
+      consumes:
+      - application/json
+      description: delete song from database
+      parameters:
+      - description: song name
+        in: query
+        name: song
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Delete Song
+      tags:
+      - deleted
+  /text:
+    get:
+      consumes:
+      - application/json
+      description: get text from database
+      parameters:
+      - description: song name
+        in: query
+        name: song
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/server.TextSong'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get Text
+      tags:
+      - text
+  /update:
+    post:
+      consumes:
+      - application/json
+      description: update song from database
+      parameters:
+      - description: update song
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.FilterSong'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Update song
+      tags:
+      - update
+swagger: "2.0"
