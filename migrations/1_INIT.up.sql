@@ -1,8 +1,17 @@
-CREATE TABLE IF NOT EXISTS songs (
-    id SERIAL,
-    "group" TEXT NOT NULL,
-    song TEXT PRIMARY KEY NOT NULL UNIQUE ,
-    releasedate TEXT NOT NULL,
-    text TEXT NOT NULL,
-    link TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS groups (
+    Id SERIAL,
+    "group" TEXT,
+    PRIMARY KEY ("group")
 );
+
+
+CREATE TABLE IF NOT EXISTS songs (
+    Id SERIAL,
+    "group" TEXT,
+    song TEXT PRIMARY KEY UNIQUE ,
+    releasedate DATE,
+    text TEXT,
+    link TEXT,
+    FOREIGN KEY ("group") REFERENCES groups("group") 
+);
+

@@ -77,18 +77,59 @@ paths:
           schema:
             $ref: '#/definitions/server.NewID'
         "400":
-          description: Bad Request
+          description: Bad request error
+        "404":
+          description: Not found error
+        "405":
+          description: Method not allowed
         "500":
-          description: Internal Server Error
+          description: Internal server error
       summary: Create song
       tags:
       - create
-  /data:
+  /delete:
+    delete:
+      consumes:
+      - application/json
+      description: delete song from database
+      parameters:
+      - description: song name
+        in: query
+        name: song
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: success response
+        "400":
+          description: Bad request error
+        "404":
+          description: Not found error
+        "405":
+          description: Method not allowed
+        "500":
+          description: Internal server error
+      summary: Delete Song
+      tags:
+      - deleted
+  /search:
     post:
       consumes:
       - application/json
       description: get songs from database
       parameters:
+      - description: first page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count page
+        in: query
+        name: limit
+        required: true
+        type: string
       - description: filter information
         in: body
         name: input
@@ -105,41 +146,32 @@ paths:
               $ref: '#/definitions/models.Song'
             type: array
         "400":
-          description: Bad Request
+          description: Bad request error
+        "404":
+          description: Not found error
+        "405":
+          description: Method not allowed
         "500":
-          description: Internal Server Error
+          description: Internal server error
       summary: Get Data
       tags:
       - data
-  /delete:
-    delete:
-      consumes:
-      - application/json
-      description: delete song from database
-      parameters:
-      - description: song name
-        in: query
-        name: song
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      summary: Delete Song
-      tags:
-      - deleted
   /text:
-    get:
+    post:
       consumes:
       - application/json
       description: get text from database
       parameters:
+      - description: first page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: count page
+        in: query
+        name: limit
+        required: true
+        type: string
       - description: song name
         in: query
         name: song
@@ -153,9 +185,13 @@ paths:
           schema:
             $ref: '#/definitions/server.TextSong'
         "400":
-          description: Bad Request
+          description: Bad request error
+        "404":
+          description: Not found error
+        "405":
+          description: Method not allowed
         "500":
-          description: Internal Server Error
+          description: Internal server error
       summary: Get Text
       tags:
       - text
@@ -175,11 +211,15 @@ paths:
       - application/json
       responses:
         "204":
-          description: No Content
+          description: success response
         "400":
-          description: Bad Request
+          description: Bad request error
+        "404":
+          description: Not found error
+        "405":
+          description: Method not allowed
         "500":
-          description: Internal Server Error
+          description: Internal server error
       summary: Update song
       tags:
       - update

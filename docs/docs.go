@@ -47,53 +47,16 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad request error"
+                    },
+                    "404": {
+                        "description": "Not found error"
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     },
                     "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/data": {
-            "post": {
-                "description": "get songs from database",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "data"
-                ],
-                "summary": "Get Data",
-                "parameters": [
-                    {
-                        "description": "filter information",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.FilterSong"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Song"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -122,19 +85,88 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content"
+                        "description": "success response"
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad request error"
+                    },
+                    "404": {
+                        "description": "Not found error"
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     },
                     "500": {
-                        "description": "Internal Server Error"
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/search": {
+            "post": {
+                "description": "get songs from database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "data"
+                ],
+                "summary": "Get Data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "first page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count page",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "filter information",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FilterSong"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Song"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request error"
+                    },
+                    "404": {
+                        "description": "Not found error"
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
         },
         "/text": {
-            "get": {
+            "post": {
                 "description": "get text from database",
                 "consumes": [
                     "application/json"
@@ -147,6 +179,20 @@ const docTemplate = `{
                 ],
                 "summary": "Get Text",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "first page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "count page",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "song name",
@@ -163,10 +209,16 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad request error"
+                    },
+                    "404": {
+                        "description": "Not found error"
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     },
                     "500": {
-                        "description": "Internal Server Error"
+                        "description": "Internal server error"
                     }
                 }
             }
@@ -197,13 +249,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Content"
+                        "description": "success response"
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad request error"
+                    },
+                    "404": {
+                        "description": "Not found error"
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     },
                     "500": {
-                        "description": "Internal Server Error"
+                        "description": "Internal server error"
                     }
                 }
             }

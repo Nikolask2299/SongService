@@ -77,32 +77,31 @@ func main() {
 	loger = loger.With(slog.String("env", "local"))
 
 	loger.Info("initializing server") 
-    loger.Debug("logger debug mode enabled")
     
     confPost, err := config.ReturnedDatabase()
     if err!= nil {
-        loger.Debug("error initializing config", slog.String("error", err.Error()))
+        loger.Error("error initializing config", slog.String("error", err.Error()))
         panic(err)
     }
 
     loger.Info("connecting to database " + confPost.DBName)
     postgres, err := postgres.NewPostgres(confPost.User, confPost.Password, confPost.DBName, confPost.Host, confPost.Port)
     if err != nil {
-       loger.Debug("error initializing postgres", slog.String("error", err.Error()))
+       loger.Error("error initializing postgres", slog.String("error", err.Error()))
        panic(err)
     }
 
     loger.Info("initializing server config")
     confServer, confAPI, err := config.RetuneServerConfig()
     if err!= nil {
-        loger.Debug("error initializing config", slog.String("error", err.Error()))
+        loger.Error("error initializing config", slog.String("error", err.Error()))
         panic(err)
     }
 
     loger.Info("initializing client config")
     clientMusic, err := client.NewClientWithResponses("http://" + confAPI.Server.Host + ":" + confAPI.Server.Port, client.WithHTTPClient(&http.Client{}))
     if err != nil {
-        loger.Debug("error initializing client", slog.String("error", err.Error()))
+        loger.Error("error initializing client", slog.String("error", err.Error()))
         panic(err)
     }
 
@@ -116,7 +115,7 @@ func main() {
         loger.Info("Received request: " + r.URL.String())
         fmt.Fprint(w, "Server listening on " + r.URL.Host)
     })
-    http.HandleFunc("/swagger/data", server.GetData)
+    http.HandleFunc("/search", server.GetData)
     http.HandleFunc("/text", server.GetText)
     http.HandleFunc("/delete", server.DeleteSong)
     http.HandleFunc("/update", server.UpdateSong)
@@ -125,7 +124,7 @@ func main() {
     loger.Info("Starting server..." + confServer.Host + " " + confServer.Port)
     err = http.ListenAndServe(confServer.Host + ":" + confServer.Port, nil) 
     if err != nil {
-        loger.Debug("error starting server", slog.String("error",err.Error()))
+        loger.Error("error starting server", slog.String("error",err.Error()))
         panic(err)
     }
 }

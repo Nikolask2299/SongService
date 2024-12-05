@@ -35,15 +35,25 @@ func (p *Postgres) Close() error {
 }
 
 func (p *Postgres) GetSongs(filter map[string]string) ([]models.Song ,error) {
-    query := `SELECT * FROM songs WHERE `
+    query := `SELECT songs.id, songs.group, songs.song, to_char(songs.releasedate, 'DD.MM.YYYY'), songs.text, songs.link FROM songs WHERE`
     
     for k, v := range filter {
-        query += `, "` + k + `"`
-        query += " = '" + v + "' "
+       if k == "releasedate" {
+            query += ` AND "` + k + `" = to_date('` + v + `', 'DD.MM.YYYY')`
+            continue
+       }
+
+       if k == "text" {
+            query += ` AND ` + `make_tsvector(songs.text) @@ plainto_tsquery($$` + v + `$$)`
+            continue
+       }
+
+        query += ` AND "` + k + `"`
+        query += ` = '` + v + `'`
     }
     query += ";"
     
-    query = strings.Replace(query, "WHERE ,", "WHERE ", -1)
+    query = strings.Replace(query, "WHERE AND", "WHERE ", -1)
 
     rows, err := p.db.Query(query)
     if err!= nil {
@@ -96,14 +106,26 @@ func (p *Postgres) DeleteSong(song string) error {
     return err
 }
 
+func (p *Postgres) SaveGroup(songs string) error {
+    query := `INSERT INTO groups("group") VALUES ($1)
+        ON CONFLICT ("group") DO NOTHING;`
+
+    _, err := p.db.Exec(query, songs)
+    return err
+}
+
 func (p *Postgres) SaveMusic(song models.NewSong, data client.SongDetail) (uint64, error) {
-    query := `
-        INSERT INTO songs("group", "song", "releasedate", "text", "link")
-        VALUES ($1, $2, $3, $4, $5)
+    query := `INSERT INTO songs("group", "song", "releasedate", "text", "link")
+        VALUES ($1, $2, to_date($3, 'DD.MM.YYYY'), $4, $5)
         RETURNING id;
     `
+    err := p.SaveGroup(song.Group)
+    if err != nil {
+        return 0, err
+    }
+
     var id uint64
-    err := p.db.QueryRow(query, song.Group, song.Song, data.ReleaseDate, data.Text, data.Link).Scan(&id)
+    err = p.db.QueryRow(query, song.Group, song.Song, data.ReleaseDate, data.Text, data.Link).Scan(&id)
     if err!= nil {
         return 0, err
     }
